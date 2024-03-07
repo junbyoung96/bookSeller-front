@@ -1,20 +1,18 @@
-import styled from 'styled-components';
-import Title from '../components/common/Title';
-import InputText from '../components/common/InputText';
-import Button from '../components/common/Button';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { signup } from '../api/auth.api';
-import { useAlert } from '../hooks/useAlert';
+import { useAuth } from "@/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import Button from "../components/common/Button";
+import InputText from "../components/common/InputText";
+import Title from "../components/common/Title";
 
 export interface SignupProps {
   email: string;
   pwd: string;
 }
 
-function Signup () {
-  const navigate = useNavigate();
-  const showAlert = useAlert();
+function Signup() {
+  const { userSignup } = useAuth();
 
   const {
     register,
@@ -22,34 +20,30 @@ function Signup () {
     formState: { errors },
   } = useForm<SignupProps>();
 
-  const onSubmit = (data: SignupProps) => {
-    signup(data).then((res) => {
-      //성공
-      showAlert('회원가입이 완료되었습니다.');
-      navigate('/login');
-    });
-  };
-  
   return (
     <>
       <Title size="large">회원가입</Title>
       <SignupStyle>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(userSignup)}>
           <fieldset>
             <InputText
               placeholder="이메일"
               type="email"
-              {...register('email', { required: true })}
+              {...register("email", { required: true })}
             />
-            {errors.email && <p className="error-text">이메일을 입력해주세요.</p>}
+            {errors.email && (
+              <p className="error-text">이메일을 입력해주세요.</p>
+            )}
           </fieldset>
           <fieldset>
             <InputText
               placeholder="비밀번호"
               type="password"
-              {...register('pwd', { required: true })}
+              {...register("pwd", { required: true })}
             />
-            {errors.pwd && <p className="error-text">비밀번호를 입력해주세요.</p>}
+            {errors.pwd && (
+              <p className="error-text">비밀번호를 입력해주세요.</p>
+            )}
           </fieldset>
           <fieldset>
             <Button type="submit" size="medium" scheme="primary">
@@ -63,7 +57,7 @@ function Signup () {
       </SignupStyle>
     </>
   );
-};
+}
 
 export const SignupStyle = styled.div`
   max-width: ${({ theme }) => theme.layout.width.small};
