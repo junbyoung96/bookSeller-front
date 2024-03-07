@@ -11,7 +11,8 @@ import BookDetail from "./pages/BookDetail";
 import Cart from "./pages/Cart";
 import Order from "./pages/Order";
 import OrderList from "./pages/OrderList";
-
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "./api/queryClient";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     path: "/books",
     element: (
       <Layout>
-        <Books></Books>        
+        <Books></Books>
       </Layout>
     ),
   },
@@ -94,9 +95,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <BookStoreThemeProvider>
-        <RouterProvider router={router}></RouterProvider>
-      </BookStoreThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BookStoreThemeProvider>
+          <RouterProvider router={router}></RouterProvider>
+        </BookStoreThemeProvider>
+      </QueryClientProvider>
     </>
   );
 }
