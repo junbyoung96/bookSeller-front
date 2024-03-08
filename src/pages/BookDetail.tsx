@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useBook } from "../hooks/useBook";
@@ -10,22 +10,27 @@ import LikeButton from "../components/book/LikeButton";
 import { formatDate, formatNumber } from "../utils/format";
 import { Link } from "react-router-dom";
 import AddToCart from "../components/book/AddToCart";
+import BookReview from "@/components/book/BookReview";
+import { Tab, Tabs } from "@/components/common/Tabs";
+import Modal from "@/components/common/Modal";
 
 const bookInfoList = [
   {
     label: "카테고리",
     key: "category",
     filter: (book: IBookDetail) => (
-      <Link to={`/books?categoryId=${book.categoryId}`}>{book.categoryName}</Link>
+      <Link to={`/books?categoryId=${book.categoryId}`}>
+        {book.categoryName}
+      </Link>
     ),
-  },  
+  },
   {
     label: "페이지",
     key: "pages",
     filter: (book: IBookDetail) => {
       return `${formatNumber(book.pages)} 쪽`;
     },
-  },  
+  },
   {
     label: "출간일",
     key: "pubDate",
@@ -44,20 +49,24 @@ const bookInfoList = [
 
 function BookDetail() {
   const { bookId } = useParams();
-  const { book , likeToggle} = useBook(bookId);
+  const { book, likeToggle, reviews, addReview } = useBook(Number(bookId));
+  const [isImgOpen, setIsImgOpen] = useState(false);
   if (!book) {
     return null;
   }
   return (
     <BookDetailStyle>
       <header className="header">
-        <div className="img">
+        <div className="img" onClick={() => setIsImgOpen(true)}>
           <img src={getImgSrc(book.id)} alt={book.title} />
         </div>
+        <Modal isOpen={isImgOpen} onClose={() => setIsImgOpen(false)}>
+          <img src={getImgSrc(book.id)} alt={book.title} />
+        </Modal>
         <div className="info">
           <Title size="large" color="text">
             {book.title}
-          </Title>          
+          </Title>
           {bookInfoList.map((item) => (
             <dl key={item.key}>
               <dt>{item.label}</dt>
@@ -71,7 +80,7 @@ function BookDetail() {
         </div>
         {/* <p className="summary">요약</p> */}
         <div className="like">
-          <LikeButton book={book} onClick={likeToggle}/>
+          <LikeButton book={book} onClick={likeToggle} />
         </div>
         <div className="add-cart">
           <AddToCart book={book}></AddToCart>
@@ -79,11 +88,20 @@ function BookDetail() {
       </header>
 
       <div className="content">
-        <Title size="medium">상세설명</Title>
-        <EllipsisBox linelimit={4}>{book.detail}</EllipsisBox>
-
-        <Title size="medium">목차</Title>
-        <p className="index">{book.contents}</p>
+        <Tabs>
+          <Tab title="상세 설명">
+            <Title size="medium">상세설명</Title>
+            <EllipsisBox linelimit={4}>{book.detail}</EllipsisBox>
+          </Tab>
+          <Tab title="목차">
+            <Title size="medium">목차</Title>
+            <p className="index">{book.contents}</p>
+          </Tab>
+          <Tab title="리뷰">
+            <Title size="medium">리뷰</Title>
+            <BookReview reviews={reviews} onAdd={addReview} />
+          </Tab>
+        </Tabs>
       </div>
     </BookDetailStyle>
   );
@@ -96,6 +114,10 @@ const BookDetailStyle = styled.div`
     gap: 24px;
     padding: 0 0 24px 0;
 
+    > div {
+      position: relative !important;
+    }
+    
     .img {
       flex: 1;
 

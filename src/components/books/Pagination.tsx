@@ -10,9 +10,9 @@ interface Props {
 }
 
 const Pagination = ({ pagination }: Props) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();  
   const { page, totalCount } = pagination;  
-  const pages: number = Math.ceil(totalCount / LIMIT);
+  const pages: number = Math.ceil(totalCount / LIMIT);      
   
   const handleClickPage = (page: number) => {
     const newSearchParams = new URLSearchParams(searchParams);

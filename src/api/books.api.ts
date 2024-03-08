@@ -6,7 +6,7 @@ interface FetchBooksParams {
   categoryId?: number;
   news?: boolean;
   page?: number;
-  limit: number;
+  limit: number;  
 }
 
 interface FetchBooksResponse {
@@ -31,7 +31,7 @@ export const fetchBooks = async (params: FetchBooksParams) => {
   }
 };
 
-export const fetchBook = async (bookId: string | undefined) => {
+export const fetchBook = async (bookId: number | undefined) => {
   const response = await httpClient.get<BookDetail>(`/books/${bookId}`);
   return response.data;
 };

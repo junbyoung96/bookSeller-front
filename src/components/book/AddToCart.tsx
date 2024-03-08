@@ -1,13 +1,11 @@
-import styled from "styled-components";
-import InputText from "../../components/common/InputText";
-import Button from "../../components/common/Button";
 import { useState } from "react";
+import styled from "styled-components";
+import Button from "../../components/common/Button";
+import InputText from "../../components/common/InputText";
 
 import { Link } from "react-router-dom";
 import { useBook } from "../../hooks/useBook";
 import { BookDetail } from "../../models/book.model";
-import { addCart } from "../../api/carts.api";
-import { useAlert } from "../../hooks/useAlert";
 
 interface Props {
   book: BookDetail;
@@ -15,8 +13,7 @@ interface Props {
 
 const AddToCart = ({ book }: Props) => {
   const [quantity, setQuantity] = useState<number>(1);
-  const showAlert = useAlert();
-  const { addToCart, cartAdded } = useBook(book.id.toString());
+  const { addToCart, cartAdded } = useBook(book.id);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuantity(Number(e.target.value));
